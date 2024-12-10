@@ -37,7 +37,7 @@ function updateChatColumns() {
     const chatColumnsDiv = document.getElementById('chat-columns');
     chatColumnsDiv.innerHTML = '';
 
-    const models = ['T5', 'BART', 'PHI3.5', 'GPT2'];
+    const models = ['T5'];
     models.forEach(model => {
         const columnDiv = document.createElement('div');
         columnDiv.className = 'chat-column';
@@ -93,7 +93,7 @@ document.getElementById('chat-form').addEventListener('submit', function(event) 
     .then(data => {
         generateStatus.style.display = 'none';
 
-        const models = ['T5', 'BART', 'PHI3.5', 'GPT2'];
+        const models = ['T5'];
         models.forEach(model => {
             const answer = data[model] || 'No response';
             chatHistory[model].push({ user: userQuestion, bot: answer });
