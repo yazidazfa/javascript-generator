@@ -1,105 +1,117 @@
-let chatHistory = {
-    'T5': []
-};
-
+let chatHistory = [];
 let apiUrl = "";
 
 function loadNgrokUrl() {
     return fetch('ngrokTunnel')
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch ngrok URL');
+            return response.text();
+        })
         .then(data => {
             const ngrokPart = data.trim();
             apiUrl = `https://${ngrokPart}.ngrok-free.app/generate`;
+            console.log('API URL loaded:', apiUrl);
         })
         .catch(error => {
             console.error('Error loading ngrok URL:', error);
+            alert('Error initializing chatbot. Please try again later.');
         });
 }
 
-function scrollToBottom() {
-    const chatColumns = document.querySelectorAll('.chat-column');
-    chatColumns.forEach(column => {
-        column.scrollTop = column.scrollHeight;
-    });
+function sanitizeHTML(str) {
+    const temp = document.createElement('div');
+    temp.textContent = str;
+    return temp.innerHTML;
 }
 
-function updateChatColumns() {
-    const chatColumnsDiv = document.getElementById('chat-columns');
-    chatColumnsDiv.innerHTML = '';
+function updateChatBox() {
+    const messagesDiv = document.getElementById('messages');
+    messagesDiv.innerHTML = ''; 
 
-    const models = ['T5'];
-    models.forEach(model => {
-        const columnDiv = document.createElement('div');
-        columnDiv.className = 'chat-column';
-        const header = document.createElement('h2');
-        header.textContent = model;
-        columnDiv.appendChild(header);
+    chatHistory.forEach(chat => {
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.className = 'message user-message';
+        userMessageDiv.innerHTML = `<p>${sanitizeHTML(chat.user)}</p>`;
+        messagesDiv.appendChild(userMessageDiv);
 
-        chatHistory[model].forEach(chat => {
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'message user-message';
-            userMessageDiv.innerHTML = `<p>${chat.user}</p>`;
-            
-            const botMessageDiv = document.createElement('div');
-            botMessageDiv.className = 'message bot-message';
-            botMessageDiv.innerHTML = `<p>${chat.bot}</p>`;
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot-message';
 
-            columnDiv.appendChild(userMessageDiv);
-            columnDiv.appendChild(botMessageDiv);
-        });
+        if (chat.bot) {
+            if (chat.bot.startsWith('```') && chat.bot.endsWith('```')) {
+                const codeContent = chat.bot.replace(/```/g, '').trim();
+                const codeBlock = document.createElement('div');
+                codeBlock.className = 'bot-code-message';
+                codeBlock.innerHTML = `
+                    <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                    <pre><code>${sanitizeHTML(codeContent)}</code></pre>
+                `;
+                botMessageDiv.appendChild(codeBlock);
+            } else {
+                botMessageDiv.innerHTML = `<p>${sanitizeHTML(chat.bot)}</p>`;
+            }
+        } else {
+            botMessageDiv.innerHTML = `<p>No response</p>`;
+        }
 
-        chatColumnsDiv.appendChild(columnDiv);
+        messagesDiv.appendChild(botMessageDiv);
     });
 
-    scrollToBottom();
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-document.getElementById('chat-form').addEventListener('submit', function(event) {
-    event.preventDefault(); 
+window.copyToClipboard = function(button) {
+    const codeElement = button.nextElementSibling.querySelector('code');
+    const codeText = codeElement.textContent;
+    navigator.clipboard.writeText(codeText).then(() => {
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = 'Copy';
+        }, 2000); 
+    }).catch(err => {
+        console.error('Error copying code:', err);
+    });
+};
 
-    const userQuestion = document.getElementById('question').value;
-    if (userQuestion.trim() === '') return;
+document.querySelector('.input-area').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const userQuestion = document.getElementById('question').value.trim();
+    if (!userQuestion) return;
 
     document.getElementById('question').value = '';
-    
-    const generateStatus = document.getElementById('status');
-    const statusText = document.getElementById('status-text');
-    const serverDownMsg = document.getElementById('serverdown');
-    const loadingAnim = document.getElementById('loader');
 
-    generateStatus.style.display = 'block';
-    statusText.style.display = 'block';
-    loadingAnim.style.display = 'block';
-    serverDownMsg.style.display = 'none';
-    
+    chatHistory.push({ user: userQuestion, bot: 'Loading...' });
+    updateChatBox();
+
     fetch(apiUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        mode:'no-cors',
-        body: JSON.stringify({ input: userQuestion })
+        body: JSON.stringify({ input: userQuestion }),
     })
-    .then(response => response.json())
-    .then(data => {
-        generateStatus.style.display = 'none';
+        .then(response => {
+            if (!response.ok) throw new Error('API error');
+            return response.json();
+        })
+        .then(data => {
+            let botResponse = data.answer || 'No response';
 
-        const models = ['T5'];
-        models.forEach(model => {
-            const answer = data[model] || 'No response';
-            chatHistory[model].push({ user: userQuestion, bot: answer });
+            if (botResponse.includes('{') && botResponse.includes('}') && botResponse.includes(';')) {
+                botResponse = `\`\`\`${botResponse}\`\`\``;
+            }
+
+            chatHistory[chatHistory.length - 1].bot = botResponse;
+            updateChatBox();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            chatHistory[chatHistory.length - 1].bot = 'Error: Unable to get a response.';
+            updateChatBox();
         });
-        updateChatColumns();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        generateStatus.style.display = 'block';
-        loadingAnim.style.display = 'none';
-        statusText.style.display = 'none';
-        serverDownMsg.style.display = 'block';
-    });
 });
 
-window.onload = function() {
-    loadNgrokUrl().then(updateChatColumns);
+window.onload = function () {
+    loadNgrokUrl().then(updateChatBox);
 };
