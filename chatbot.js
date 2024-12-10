@@ -25,7 +25,7 @@ function sanitizeHTML(str) {
 }
 
 function updateChatBox() {
-    const messagesDiv = document.getElementById('messages');
+    const messagesDiv = document.getElementById('chat-columns');
     messagesDiv.innerHTML = ''; 
 
     chatHistory.forEach(chat => {
