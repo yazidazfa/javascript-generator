@@ -26,6 +26,10 @@ function sanitizeHTML(str) {
 
 function updateChatBox() {
     const messagesDiv = document.getElementById('chat-columns');
+    if (!messagesDiv) {
+        console.error("Element with ID 'chat-columns' not found.");
+        return;
+    }
     messagesDiv.innerHTML = ''; 
 
     chatHistory.forEach(chat => {
@@ -113,5 +117,7 @@ document.querySelector('.input-area').addEventListener('submit', function (event
 });
 
 window.onload = function () {
-    loadNgrokUrl().then(updateChatBox);
+    loadNgrokUrl().then(() => {
+        updateChatBox();
+    });
 };
