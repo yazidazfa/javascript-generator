@@ -11,24 +11,25 @@ body {
 }
 
 .chat-container {
-    background: #ffffff;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    width: 100%; /* Atur lebar sesuai kebutuhan */
+    max-width: 500px; /* Batas maksimum untuk lebar */
+    height: 600px; /* Tinggi container */
+    margin: 0 auto; /* Pusatkan di tengah layar */
+    border: 1px solid #ccc; /* Opsional: Untuk visualisasi */
+    overflow: hidden; /* Potong konten yang keluar dari container */
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    flex-direction: column; /* Pastikan elemen di dalamnya teratur vertikal */
 }
 
 /* Chat history area */
 .chat-columns {
-    padding: 15px;
-    flex: 1;
-    overflow-y: auto;
-
-    justify-content: center;
-    align-self: center;
+    flex: 1; /* Isi ruang yang tersedia dalam container */
+    overflow-y: auto; /* Tambahkan scroll vertikal jika konten terlalu panjang */
+    padding: 10px; /* Tambahkan padding untuk jarak konten */
+    box-sizing: border-box; /* Hitung padding dalam ukuran elemen */
+    word-wrap: break-word; /* Memastikan kata panjang terputus */
+    overflow-wrap: break-word;
+    overflow-x: hidden; /* Mencegah overflow horizontal */
 }
 
 .chat-columns::-webkit-scrollbar {
