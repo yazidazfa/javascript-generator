@@ -1,8 +1,5 @@
 let chatHistory = {
-    'BART': [],
-    'GPT2': [],
-    'T5': [],
-    'PHI3.5': []
+    'T5': []
 };
 
 let apiUrl = "";
