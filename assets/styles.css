@@ -32,6 +32,16 @@ body {
     overflow-x: hidden; /* Mencegah overflow horizontal */
 }
 
+.bot-code-message {
+    flex: 1; /* Isi ruang yang tersedia dalam container */
+    overflow-y: auto; /* Tambahkan scroll vertikal jika konten terlalu panjang */
+    padding: 10px; /* Tambahkan padding untuk jarak konten */
+    box-sizing: border-box; /* Hitung padding dalam ukuran elemen */
+    word-wrap: break-word; /* Memastikan kata panjang terputus */
+    overflow-wrap: break-word;
+    overflow-x: hidden; /* Mencegah overflow horizontal */
+}
+
 .chat-columns::-webkit-scrollbar {
     width: 6px;
 }
