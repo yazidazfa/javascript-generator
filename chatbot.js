@@ -23,13 +23,6 @@ function scrollToBottom() {
     });
 }
 
-function toggleTheme() {
-    const body = document.body;
-    body.classList.toggle('light-mode');
-    const themeButton = document.querySelector('.theme-toggle-btn');
-    themeButton.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
-}
-
 function updateChatColumns() {
     const chatColumnsDiv = document.getElementById('chat-columns');
     chatColumnsDiv.innerHTML = '';
@@ -84,6 +77,7 @@ document.getElementById('chat-form').addEventListener('submit', function(event) 
         headers: {
             'Content-Type': 'application/json'
         },
+        mode:'no-cors',
         body: JSON.stringify({ input: userQuestion })
     })
     .then(response => response.json())
