@@ -33,6 +33,8 @@ body {
     overflow-wrap: break-word;
     overflow-x: hidden; /* Mencegah overflow horizontal */
     background-color: #32332d;
+    color: white;
+    font-size: 18px;
 }
 
 .bot-code-message {
@@ -43,6 +45,8 @@ body {
     word-wrap: break-word; /* Memastikan kata panjang terputus */
     overflow-wrap: break-word;
     overflow-x: hidden; /* Mencegah overflow horizontal */
+    color:white;
+    font-size: 19px;
 }
 
 .chat-columns::-webkit-scrollbar {
