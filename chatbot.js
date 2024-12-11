@@ -47,8 +47,8 @@ function updateChatBox() {
                 const codeBlock = document.createElement('div');
                 codeBlock.className = 'bot-code-message';
                 codeBlock.innerHTML = `
-                    <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
                     <pre><code>${sanitizeHTML(codeContent)}</code></pre>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
                 `;
                 botMessageDiv.appendChild(codeBlock);
             } else {
@@ -63,6 +63,7 @@ function updateChatBox() {
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
+
 
 window.copyToClipboard = function(button) {
     const codeElement = button.nextElementSibling.querySelector('code');
