@@ -83,7 +83,7 @@ Follow these steps to set up and use our module to integrate with Google Drive.
 
 ## 7. Run the Initial Setup
 
-- Go to **Scheduled Actions** in Odoo and manually run the scheduled action for the first time. This will create the necessary folder in Google Drive.
+- Go to **Scheduled Actions** in Odoo and manually run the **Montly Create Drive Folder** scheduled action for the first time. This will create the necessary folder in Google Drive.
 
 ## 8. Start Uploading Attachments
 
