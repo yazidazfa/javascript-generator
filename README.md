@@ -65,7 +65,7 @@ Follow these steps to set up and use our module to integrate with Google Drive.
 
 ## 3. Upload Credentials in Odoo
 
-- Open your Odoo application and go to the **Credentials** menu.
+- Open your Odoo application and go to the **GDrive Credentials** menu.
 - Create a new record and fill in the fields to match the details in the downloaded JSON file.
 
 ## 4. Share Folder with Your Email
